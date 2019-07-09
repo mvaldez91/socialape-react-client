@@ -1,25 +1,49 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter,Route, Switch} from 'react-router-dom';
+import  './App.css';
+
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+//pages imports
+import home from './pages/home';
+import login from './pages/login';
+import signup from './pages/signup';
+import NavBar from './components/NavBar';
+
+const theme = createMuiTheme({
+   palette:{
+       primary:{
+           light: '#33c9dc',
+           main: '#00bcd4',
+           dark: '#008394',
+           contrastText: '#fff'
+       },
+       secondary: {
+           light: '#ff6333',
+           main: '#ff3d00',
+           dark: '#b22a00',
+           contrastText: '#fff'
+       }
+   }
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <MuiThemeProvider theme={theme}>
+          <div className="App">
+              <BrowserRouter>
+                  <div className="container">
+                      <NavBar/>
+                      <Switch>
+                          <Route exact path='/' component={home}></Route>
+                          <Route exact path='/login' component={login}></Route>
+                          <Route exact path='/signup' component={signup}></Route>
+                      </Switch>
+                  </div>
+
+              </BrowserRouter>
+          </div>
+      </MuiThemeProvider>
   );
 }
 
