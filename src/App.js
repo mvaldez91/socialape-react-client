@@ -6,6 +6,12 @@ import './App.css';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
+//Redux
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import {SET_AUTHENTICATED} from './redux/types';
+import {logoutUser, getUserData} from './redux/actions/userActions';
+
 //pages imports
 import home from './pages/home';
 import login from './pages/login';
@@ -29,50 +35,51 @@ const theme = createMuiTheme({
             contrastText: '#000fff'
         }
     },
-    typography:{
+    typography: {
         useNextVariants: true
     }
 });
 
 let authenticated = false;
 const token = localStorage.FBIdToken;
-if (token){
+if (token) {
+    
     const decodedToken = jwtDecode(token);
     console.log(decodedToken);
-    if (decodedToken.exp * 1000 < Date.now()){
-        window.location.href ='/login';
-        authenticated = false;
+    if (decodedToken.exp * 1000 < Date.now()) {
+        store.dispatch(logoutUser()); 
+        window.location.href = '/login';
     }
-    else{
-        authenticated= true;
+    else {
+        store.dispatch({type: SET_AUTHENTICATED});
+        store.dispatch(getUserData());
     }
 }
 
 function App() {
     return (
         <MuiThemeProvider theme={theme}>
-            <div className="App">
+            <Provider store={store}>
                 <BrowserRouter>
                     <div className="container">
                         <NavBar />
                         <Switch>
-                            <Route 
-                                exact 
-                                path='/' 
+                            <Route
+                                exact
+                                path='/'
                                 component={home}></Route>
-                            <AuthRoute exact 
-                                    path='/login' 
-                                    component={login} 
-                                    authenticated={authenticated}></AuthRoute>
-                            <AuthRoute exact 
-                                    path='/signup' 
-                                    component={signup}
-                                    authenticated={authenticated}></AuthRoute>
+                            <AuthRoute exact
+                                path='/login'
+                                component={login}
+                                authenticated={authenticated}></AuthRoute>
+                            <AuthRoute exact
+                                path='/signup'
+                                component={signup}
+                                authenticated={authenticated}></AuthRoute>
                         </Switch>
                     </div>
-
                 </BrowserRouter>
-            </div>
+            </Provider>
         </MuiThemeProvider>
     );
 }

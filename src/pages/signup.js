@@ -8,10 +8,15 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { CircularProgress } from '@material-ui/core';
+
 import {Link} from 'react-router-dom';
 
 import {themeStyles}  from '../themes';
 
+//Redux 
+import {connect} from 'react-redux';
+import {signupUser} from '../redux/actions/userActions';
+import {logoutUser} from '../redux/actions/userActions';
 
 class Signup extends Component {
     constructor(props) {
@@ -26,46 +31,23 @@ class Signup extends Component {
         }
     }
 
+    componentWillReceiveProps(nextProps){
+        if(nextProps.UI.errors){
+            this.setState({errors: nextProps.UI.errors});
+        }
+    }
+
     handleSubmit = (event) => {
         let resStatus = 0;
         event.preventDefault();
-        this.setState({
-            loading: true
-        });
+       
         const userData = {
             email: this.state.email,
             password: this.state.password,
             confirmPassword: this.state.confirmPassword,
             handle: this.state.handle
         };
-        fetch('/signup', {
-            method: 'POST',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData)
-        })
-            .then(res => {
-                resStatus = res.status;
-                return res.json()
-            })
-            .then(data => {
-                if (resStatus >= 400) {
-                    throw JSON.stringify(data);
-                }
-                localStorage.setItem('FBIdToken', `Bearer ${data.token}`);
-                this.setState({
-                    loading: false
-                });
-                this.props.history.push('/')
-            }).catch(err => {
-                console.log(err)
-                this.setState({
-                    errors: JSON.parse(err),
-                    loading: false
-                })
-            })
+        this.props.signupUser(userData, this.props.history);
     };
 
 
@@ -74,9 +56,9 @@ class Signup extends Component {
             [event.target.name]: event.target.value
         });
     };
-    render() {
-        const { classes } = this.props;
-        const { errors, loading } = this.state;
+    render() { 
+        const { classes, UI: {loading} } = this.props;
+        const { errors } = this.state;
 
         return (
             <Grid container className={classes.form}>
@@ -131,7 +113,7 @@ class Signup extends Component {
                             color="primary"
                             disabled={loading}
                             className={classes.button}>
-                            Login
+                            Signup
                         {loading && (
                                 <CircularProgress className="classes.progress" size={30}></CircularProgress>
                             )}
@@ -147,7 +129,20 @@ class Signup extends Component {
 }
 
 Signup.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired,
+    UI: PropTypes.object.isRequired,
+    logoutUser: PropTypes.func.isRequired
 };
 
-export default withStyles(themeStyles)(Signup);
+const mapStateToProps = (state) =>({
+    user: state.user,
+    UI: state.UI
+});
+
+const mapActionsToProps = {
+    logoutUser,
+    signupUser
+};
+
+export default  (connect(mapStateToProps, mapActionsToProps)) (withStyles(themeStyles)(Signup));
