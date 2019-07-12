@@ -7,25 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { CircularProgress } from '@material-ui/core';
 
-const styles ={
-    form: {
-        textAlign: 'center'
-    },
-    image: {
-        margin: '20px auto 20px auto'
-    },
-    pageTitle: {
-        margin: '10px auto 10px auto'
-    },
-    textField:{
-        margin: '10px auto 10px auto'
-    },
-    button: {
-        marginTop: 20
-    }
-};
-
+import {themeStyles}  from '../themes';
 
 class Login extends Component {
     constructor(props){
@@ -63,6 +47,7 @@ class Login extends Component {
                 if (resStatus >= 400){
                     throw JSON.stringify(data);
                 }
+                localStorage.setItem('FBIdToken', `Bearer ${data.token}`);
                 this.setState({
                     loading:false
                 });
@@ -115,7 +100,17 @@ class Login extends Component {
                                helperText={errors.password}
                                error={errors.password ? true: false}
                                onChange={this.handleChange} fullWidth/>
-                    <Button type="submit" variant="contained" color="primary" className={classes.button}>Login</Button>
+                    <Button 
+                        type="submit" 
+                        variant="contained" 
+                        color="primary"
+                        disabled={loading} 
+                        className={classes.button}>
+                        Login
+                        {loading && (
+                            <CircularProgress className="classes.progress" size={30}></CircularProgress>
+                        )}
+                        </Button>
                 </form>
             </Grid>
             <Grid item sm></Grid>
@@ -128,4 +123,4 @@ Login.propTypes = {
    classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Login);
+export default withStyles(themeStyles)(Login);

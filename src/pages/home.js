@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import Grid from '@material-ui/core/Grid';
-
 import Scream from '../components/Scream';
 
 class Home extends Component {
@@ -10,15 +9,20 @@ class Home extends Component {
     };
 
     componentDidMount(){
+        let resStatus = 0
         fetch('/scream',
             {
                 headers:{
-                    'Authorization': ''
+                    'Authorization': localStorage.getItem('FBIdToken')
                 }
             })
-            .then(res=>res.json())
+            .then(res=>{
+                resStatus = res.status;   
+                return res.json()})
             .then(data=>{
-
+                if (resStatus >= 400){
+                    throw JSON.stringify(data);
+                }
                 this.setState({
                     screams: data
                 });

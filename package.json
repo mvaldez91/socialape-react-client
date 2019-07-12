@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.2.0",
     "dayjs": "^1.8.15",
+    "jwt-decode": "^2.2.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -18,7 +19,11 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    }
   },
   "browserslist": {
     "production": [
