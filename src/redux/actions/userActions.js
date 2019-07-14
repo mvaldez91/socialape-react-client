@@ -1,14 +1,16 @@
-import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED } from '../types';
+import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED,LOADING_USER } from '../types';
 
-export const loginUser = (userData) => (dispatch) => {
+const jsonHeaders = {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+};
+
+export const loginUser = (userData, history) => (dispatch) => {
     let resStatus = 0;
     dispatch({ type: LOADING_UI });
     fetch('/login', {
         method: 'POST',
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
+        headers: jsonHeaders,
         body: JSON.stringify(userData)
     })
         .then(res => {
@@ -22,7 +24,8 @@ export const loginUser = (userData) => (dispatch) => {
             localStorage.setItem('FBIdToken', `Bearer ${data.token}`);
             dispatch(getUserData());
             dispatch({ type: CLEAR_ERRORS });
-            this.props.history.push('/')
+            history.push('/')
+           
         }).catch(err => {
             console.error(err)
             dispatch({
@@ -33,15 +36,12 @@ export const loginUser = (userData) => (dispatch) => {
 }
 
 
-export const signupUser = (userData) => (dispatch) => {
+export const signupUser = (userData,history) => (dispatch) => {
     let resStatus = 0;
     dispatch({ type: LOADING_UI });
     fetch('/signup', {
         method: 'POST',
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
+        headers: jsonHeaders,
         body: JSON.stringify(userData)
     })
         .then(res => {
@@ -55,7 +55,7 @@ export const signupUser = (userData) => (dispatch) => {
             localStorage.setItem('FBIdToken', `Bearer ${data.token}`);
             dispatch(getUserData());
             dispatch({ type: CLEAR_ERRORS });
-            this.props.history.push('/')
+            history.push('/')
         }).catch(err => {
             console.error(err)
             dispatch({
@@ -67,12 +67,12 @@ export const signupUser = (userData) => (dispatch) => {
 
 
 export const getUserData = () => (dispatch) => {
+    dispatch({type:LOADING_USER});
     let resStatus = 0;
     fetch('/user', {
         method: 'GET',
         headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+          ...jsonHeaders,
             "Authorization": localStorage.FBIdToken
         }
     })
@@ -93,6 +93,62 @@ export const getUserData = () => (dispatch) => {
             dispatch({ type: SET_ERRORS, payload: JSON.parse(err) });
         })
 };
+
+export const uploadImage = (formData) => (dispatch) => {
+    dispatch({type:LOADING_USER});
+    let resStatus = 0;
+
+    fetch('/user/image', {
+        method: 'POST',
+        headers: {
+            "Authorization": localStorage.FBIdToken
+        },
+        body: formData
+    })
+        .then(res => {
+            resStatus = res.status;
+            return res.json();
+        })
+        .then(data => {
+            if (resStatus >= 400) {
+                throw JSON.stringify(data);
+            }
+            dispatch(getUserData())
+        }).catch(err => {
+            console.error(err)
+            dispatch({ type: SET_ERRORS, payload: JSON.parse(err) });
+        })
+}
+
+export const editUserDetails = (userDetails) => (dispatch) => {
+    let resStatus = 0;
+    dispatch({ type: LOADING_USER });
+    fetch('/user', {
+        method: 'POST',
+        headers: {
+            ...jsonHeaders, 
+            "Authorization": localStorage.FBIdToken
+        },
+        body: JSON.stringify(userDetails)
+    })
+        .then(res => {
+            resStatus = res.status;
+            return res.json()
+        })
+        .then(data => {
+            if (resStatus >= 400) {
+                throw JSON.stringify(data);
+            }
+            dispatch(getUserData());
+        }).catch(err => {
+            console.error(err)
+            dispatch({
+                type: SET_ERRORS,
+                payload: JSON.parse(err)
+            });
+        })
+}
+
 
 export const logoutUser = ()=> (dispatch)=>{
     localStorage.removeItem('FBIdToken');

@@ -15,8 +15,7 @@ import {themeStyles}  from '../themes';
 
 //Redux 
 import {connect} from 'react-redux';
-import {signupUser} from '../redux/actions/userActions';
-import {logoutUser} from '../redux/actions/userActions';
+import {signupUser,logoutUser} from '../redux/actions/userActions';
 
 class Signup extends Component {
     constructor(props) {
@@ -38,9 +37,7 @@ class Signup extends Component {
     }
 
     handleSubmit = (event) => {
-        let resStatus = 0;
         event.preventDefault();
-       
         const userData = {
             email: this.state.email,
             password: this.state.password,
