@@ -4,38 +4,20 @@ import Grid from '@material-ui/core/Grid';
 import Scream from '../components/Scream';
 import Profile from '../components/Profile';
 
-class Home extends Component {
-    state = {
-        screams: null
-    };
+import PropTypes from 'prop-types';
 
+import {connect} from 'react-redux';
+import {getScreams, unlikeScream} from '../redux/actions/dataActions';
+
+class Home extends Component {
     componentDidMount(){
-        let resStatus = 0
-        fetch('/scream',
-            {
-                headers:{
-                    'Authorization': localStorage.getItem('FBIdToken')
-                }
-            })
-            .then(res=>{
-                resStatus = res.status;   
-                return res.json()})
-            .then(data=>{
-                if (resStatus >= 400){
-                    throw JSON.stringify(data);
-                }
-                this.setState({
-                    screams: data
-                });
-            })
-            .catch(err=> {
-                console.error(err);
-            });
+        this.props.getScreams()
     }
 
     render(){
-        let recentScreamMarkup = this.state.screams ? (
-            this.state.screams.map(scream => <Scream key={scream.screamId} scream={scream}/>  )
+        const {screams, loading} = this.props.data;
+        let recentScreamMarkup = screams ? (
+            screams.map(scream => <Scream key={scream.screamId} scream={scream}/>  )
         ) : <p>Loading...</p>
 
         return(
@@ -52,4 +34,15 @@ class Home extends Component {
     }
 }
 
-export default Home;
+Home.propTypes ={
+    getScreams: PropTypes.func.isRequired,
+    unlikeScream: PropTypes.func.isRequired,
+    data: PropTypes.object.isRequired
+};
+const mapStateToProps = state =>({
+    data: state.data
+})
+
+
+
+export default connect(mapStateToProps,{getScreams, unlikeScream})(Home);
