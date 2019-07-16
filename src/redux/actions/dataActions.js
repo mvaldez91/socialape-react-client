@@ -1,4 +1,4 @@
-import {SET_SCREAMS, LIKE_SCREAM, UNLIKE_SCREAM,SET_ERRORS, DELETE_SCREAM, POST_SCREAM, LOADING_UI, CLEAR_ERRORS} from '../types';
+import {SET_SCREAMS, SET_SCREAM, LIKE_SCREAM, UNLIKE_SCREAM,SET_ERRORS, DELETE_SCREAM, POST_SCREAM, LOADING_UI, CLEAR_ERRORS, STOP_LOADING_UI} from '../types';
 
 
 const jsonHeaders = {
@@ -28,6 +28,33 @@ export const getScreams = ()=> (dispatch)=>{
             console.error(err);
             dispatch({type: SET_ERRORS, payload: err})
             dispatch({type: SET_SCREAMS, payload: []})
+        });
+};
+
+export const getScream = (screamId)=> (dispatch)=>{
+    let resStatus = 0
+    dispatch({type: LOADING_UI});
+    fetch(`/scream/${screamId}`,
+        {
+            headers:{
+                ...jsonHeaders,
+                'Authorization': localStorage.getItem('FBIdToken')
+            }
+        })
+        .then(res=>{
+            resStatus = res.status;   
+            return res.json()})
+        .then(data=>{
+            if (resStatus >= 400){
+                throw JSON.stringify(data);
+            }
+            dispatch({type: SET_SCREAM, payload: data});
+            dispatch({type: STOP_LOADING_UI});
+        })
+        .catch(err=> {
+            console.error(err);
+            dispatch({type: SET_ERRORS, payload: err})
+            dispatch({type: SET_SCREAM, payload: {}})
         });
 };
 
@@ -114,7 +141,7 @@ export const postScream = (scream)=>(dispatch)=>{
                 'Authorization': localStorage.getItem('FBIdToken')
             },
             method: 'POST',
-            body: scream
+            body: JSON.stringify(scream) 
         })
         .then(res=>{
             resStatus = res.status;   
@@ -124,7 +151,7 @@ export const postScream = (scream)=>(dispatch)=>{
                 throw JSON.stringify(data);
             }
             dispatch({type: CLEAR_ERRORS, payload: data});
-            //dispatch({type: POST_SCREAM, payload: data});
+            dispatch({type: POST_SCREAM, payload: data});
         })
         .catch(err=> {
             dispatch({type: SET_ERRORS, payload: err})

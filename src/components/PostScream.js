@@ -48,16 +48,27 @@ class PostScream extends Component {
     this.setState({ open: true })
   }
   handleClose = () => {
-    this.setState({ open: false })
+    this.setState({ open: false, errors: {} })
   }
   handleChange = (e) =>{
     this.setState({[e.target.name]: e.target.value})
   }
   handleSubmit = (event) => {
       event.preventDefault();
-      this.props.postScream();
+      this.props.postScream( {body:this.state.body});
   }
 
+  componentWillReceiveProps(nextProps){
+    if (nextProps.UI.errors){
+      this.setState({
+        errors: nextProps.UI.errors
+      });
+    }
+    if (!nextProps.UI.errors && !nextProps.UI.loading){
+      this.setState({body: ''})
+      this.handleClose();
+    }
+  }
 
   render() {
     const { errors } = this.state;

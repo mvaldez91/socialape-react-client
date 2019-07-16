@@ -19,6 +19,7 @@ import PropTypes from 'prop-types';
 
 import CustomButton from '../util/CustomButton';
 import DeleteScream from '../components/DeleteScream';
+import ScreamDialog from '../components/ScreamDialog';
 
 //Icons
 import ChatIcon from '@material-ui/icons/Chat';
@@ -66,7 +67,8 @@ class Scream extends Component {
         const { classes,
             scream: { body, createdAt, userImage, userHandle, screamId, likeCount, commentCount },
             user: {
-                authenticated
+                authenticated,
+                credentials
             }
         } = this.props;
         const likeButton = authenticated ? (
@@ -92,7 +94,9 @@ class Scream extends Component {
                         component={Link}
                         to={`/users/${userHandle}`}
                         color="primary">{userHandle}</Typography>
-                    <DeleteScream screamId={screamId}></DeleteScream>
+                    {userHandle === credentials.handle && 
+                         <DeleteScream screamId={screamId}></DeleteScream>
+                    }
                     <Typography variant="body2" color="textSecondary">{dayjs(createdAt).fromNow()}</Typography>
                     <Typography variant="body1" >{body}</Typography>
                     {likeButton}
@@ -101,6 +105,7 @@ class Scream extends Component {
                         <ChatIcon color="primary"></ChatIcon>
                     </CustomButton>
                     <span>{commentCount} comments </span>
+                    <ScreamDialog screamId={screamId} userHandle={userHandle}/>
                 </CardContent>
             </Card>
         );
