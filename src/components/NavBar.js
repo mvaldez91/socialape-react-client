@@ -12,6 +12,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import NotificationIcon from '@material-ui/icons/Notifications';
 
 import CustomButtom from '../util/CustomButton';
+import PostScream from '../components/PostScream';
 
 class NavBar extends Component {
     render() {
@@ -21,9 +22,8 @@ class NavBar extends Component {
                 <Toolbar className="nav-container">
                     {authenticated ? (
                         <Fragment>
-                            <CustomButtom tip="Post a scream">
-                                <AddIcon color="primary"></AddIcon>
-                            </CustomButtom>
+                            <PostScream></PostScream>
+                          
                             <Link to="/">
                                 <CustomButtom tip="Home">
                                     <HomeIcon color="primary"></HomeIcon>

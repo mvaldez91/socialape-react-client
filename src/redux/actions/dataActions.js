@@ -1,4 +1,4 @@
-import {SET_SCREAMS, LIKE_SCREAM, UNLIKE_SCREAM,SET_ERRORS, DELETE_SCREAM, POST_SCREAM} from '../types';
+import {SET_SCREAMS, LIKE_SCREAM, UNLIKE_SCREAM,SET_ERRORS, DELETE_SCREAM, POST_SCREAM, LOADING_UI, CLEAR_ERRORS} from '../types';
 
 
 const jsonHeaders = {
@@ -99,19 +99,22 @@ export const deleteScream = (screamId)=>(dispatch)=>{
             dispatch({type: DELETE_SCREAM, payload: data});
         })
         .catch(err=> {
+            dispatch({type: SET_ERRORS, payload: err});
             console.error(err);
         });
 }
 
 export const postScream = (scream)=>(dispatch)=>{
-    let resStatus = 0
+    let resStatus = 0;
+    dispatch({type: LOADING_UI});
     fetch('/scream',
         {
             headers:{
                 ...jsonHeaders,
                 'Authorization': localStorage.getItem('FBIdToken')
             },
-            method: 'POST'
+            method: 'POST',
+            body: scream
         })
         .then(res=>{
             resStatus = res.status;   
@@ -120,9 +123,11 @@ export const postScream = (scream)=>(dispatch)=>{
             if (resStatus >= 400){
                 throw JSON.stringify(data);
             }
-            dispatch({type: POST_SCREAM, payload: data});
+            dispatch({type: CLEAR_ERRORS, payload: data});
+            //dispatch({type: POST_SCREAM, payload: data});
         })
         .catch(err=> {
+            dispatch({type: SET_ERRORS, payload: err})
             console.error(err);
         });
 }
