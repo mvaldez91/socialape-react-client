@@ -19,3 +19,8 @@ export const UNLIKE_SCREAM = 'UNLIKE_SCREAM';
 export const DELETE_SCREAM = 'DELETE_SCREAM';
 export const POST_SCREAM = 'POST_SCREAM';
 
+//Coment reducer types
+export const SET_COMMENT = 'SET_COMMENT';
+
+
+

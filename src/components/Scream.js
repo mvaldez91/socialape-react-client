@@ -20,11 +20,10 @@ import PropTypes from 'prop-types';
 import CustomButton from '../util/CustomButton';
 import DeleteScream from '../components/DeleteScream';
 import ScreamDialog from '../components/ScreamDialog';
+import LikeButton from '../components/LikeButton';
 
 //Icons
 import ChatIcon from '@material-ui/icons/Chat';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-
 
 const styles = {
     card: {
@@ -65,23 +64,12 @@ class Scream extends Component {
     render() {
         dayjs.extend(relativeTime);
         const { classes,
-            scream: { body, createdAt, userImage, userHandle, screamId, likeCount, commentCount },
+            scream: { body, createdAt, userImage, userHandle, screamId, commentCount },
             user: {
                 authenticated,
                 credentials
             }
         } = this.props;
-        const likeButton = authenticated ? (
-            this.likedScream() ?
-                <CustomButton tip="Undo like" onClick={this.unlikeScream}>
-                    <FavoriteIcon ></FavoriteIcon>
-                </CustomButton>
-                :
-                <CustomButton tip="Like" onClick={this.likeScream}>
-                    <FavoriteIcon color="primary"></FavoriteIcon>
-                </CustomButton>
-        ) : <span></span>;
-
         return (
             <Card className={classes.card}>
                 <CardMedia
@@ -99,11 +87,12 @@ class Scream extends Component {
                     }
                     <Typography variant="body2" color="textSecondary">{dayjs(createdAt).fromNow()}</Typography>
                     <Typography variant="body1" >{body}</Typography>
-                    {likeButton}
-                    <span>{likeCount} Likes </span>
+                    {authenticated &&  <LikeButton scream={this.props.scream}/>} 
+                
                     <CustomButton tip="comments">
                         <ChatIcon color="primary"></ChatIcon>
                     </CustomButton>
+                    
                     <span>{commentCount} comments </span>
                     <ScreamDialog screamId={screamId} userHandle={userHandle}/>
                 </CardContent>
