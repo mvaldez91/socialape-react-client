@@ -27,3 +27,9 @@ yarn-error.log*
 
 # webStorm
 /idea
+
+# firebase 
+firebase-debug.log*
+
+# Firebase cache
+.firebase/
