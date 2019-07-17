@@ -1,4 +1,11 @@
-import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED,LOADING_USER } from '../types';
+import { SET_USER, 
+         SET_ERRORS, 
+         CLEAR_ERRORS, 
+         LOADING_UI, 
+         SET_UNAUTHENTICATED,
+         LOADING_USER,
+         SET_USER_DETAILS,
+         SET_SCREAMS } from '../types';
 
 const jsonHeaders = {
     "Accept": "application/json",
@@ -149,6 +156,35 @@ export const editUserDetails = (userDetails) => (dispatch) => {
         })
 }
 
+export const getUserDetails = (handle) => (dispatch) => {
+    let resStatus = 0;
+    dispatch({ type: LOADING_USER });
+    fetch(`/user/${handle}`, {
+        method: 'GET',
+        headers: {
+            ...jsonHeaders, 
+            "Authorization": localStorage.FBIdToken
+        }
+    })
+        .then(res => {
+            resStatus = res.status;
+            return res.json()
+        })
+        .then(data => {
+            if (resStatus >= 400) {
+                throw JSON.stringify(data);
+            }
+            dispatch({type: SET_USER_DETAILS, payload: data});
+            dispatch({type: SET_SCREAMS, payload: data.screams });
+            
+        }).catch(err => {
+            console.error(err)
+            dispatch({
+                type: SET_ERRORS,
+                payload: JSON.parse(err)
+            });
+        })
+}
 
 export const logoutUser = ()=> (dispatch)=>{
     localStorage.removeItem('FBIdToken');

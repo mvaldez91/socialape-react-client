@@ -21,7 +21,9 @@ export const themeStyles = {
         position: 'absolute'
     },
     paper: {
-        padding: 20
+        padding: 20,
+        marginLeft: 10,
+        marginRight: 10
     },
     profile: {
         '& .image-wrapper': {
@@ -40,15 +42,6 @@ export const themeStyles = {
             maxWidth: '100%',
             borderRadius: '50%'
         },
-        '& .profile-details': {
-            textAlign: 'center',
-            '& span, svg': {
-                verticalAlign: 'middle'
-            },
-            '& a': {
-                color: '#00bcd4'
-            }
-        },
         '& hr': {
             border: 'none',
             margin: '0 0 10px 0'
@@ -59,10 +52,23 @@ export const themeStyles = {
             }
         }
     },
+    profile_details: {
+        textAlign: 'center',
+        '& span, svg': {
+            verticalAlign: 'middle'
+        },
+        '& a': {
+            color: '#00bcd4'
+        }
+    },
     buttons: {
         textAlign: 'center',
         '& a': {
             margin: '20px 10px'
         }
+    },
+    invisibleSeparator: {
+        border: 'none',
+        margin: 4
     }
 };

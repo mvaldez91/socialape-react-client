@@ -27,7 +27,9 @@ import {logoutUser, uploadImage} from '../redux/actions/userActions';
 
 
 import { themeStyles } from '../themes';
-const styles = (theme) => ({ ...themeStyles });
+const styles = { 
+  ...themeStyles 
+};
 
 class Profile extends Component {
 
@@ -37,10 +39,10 @@ class Profile extends Component {
     formData.append('image', image, image.name);
     this.props.uploadImage(formData);
   }
-  handleEditPicture = (event) => {
+  handleEditPicture = () => {
     document.getElementById('imageInput').click();
   }
-  handleLogout = (event)=>{
+  handleLogout = ()=>{
     this.props.logoutUser();
   }
   render() {
@@ -82,25 +84,25 @@ class Profile extends Component {
             </Tooltip>
           </div>
         </div>
-        <hr />
-        <div className="profile-details">
+        <hr  className={classes.invisibleSeparator} />
+        <div className={classes.profile_details}>
           <MuiLink component={Link} to={`/users/${handle}`} color="primary" variant="h5">
             @{handle}
           </MuiLink>
-          <hr />
+          <hr  className={classes.invisibleSeparator} />
           {bio && <Typography variant="body2">{bio}</Typography>}
-          <hr />
+          <hr   className={classes.invisibleSeparator} />
           {location && (
             <Fragment>
               <LocationOn color="primary"></LocationOn><span>{location}</span>
-              <hr />
+              <hr  className={classes.invisibleSeparator} />
             </Fragment>
           )}
           {website && (
             <Fragment>
               <LinkIcon color="primary"></LinkIcon>
               <a href={website} target="_blank" rel="noopener noreferrer">{' '}{website}</a>
-              <hr />
+              <hr className={classes.invisibleSeparator} />
             </Fragment>
           )}
           <CalendarToday color="primary" /> {' '}<span>Joined {dayjs(createdAt).format('MMM YYYY')}</span>

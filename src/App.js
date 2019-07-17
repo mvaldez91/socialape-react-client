@@ -16,6 +16,7 @@ import {logoutUser, getUserData} from './redux/actions/userActions';
 import home from './pages/home';
 import login from './pages/login';
 import signup from './pages/signup';
+import user from './pages/user';
 
 //Components import
 import NavBar from './components/NavBar';
@@ -43,9 +44,7 @@ const theme = createMuiTheme({
 let authenticated = false;
 const token = localStorage.FBIdToken;
 if (token) {
-    
     const decodedToken = jwtDecode(token);
-    console.log(decodedToken);
     if (decodedToken.exp * 1000 < Date.now()) {
         store.dispatch(logoutUser()); 
         window.location.href = '/login';
@@ -76,6 +75,14 @@ function App() {
                                 path='/signup'
                                 component={signup}
                                 authenticated={authenticated}></AuthRoute>
+                            <Route exact 
+                                   path="/users/:handle" 
+                                   component={user}>
+                            </Route>
+                            <Route exact 
+                                   path="/users/:handle/scream/:screamId" 
+                                   component={user}>
+                            </Route>
                         </Switch>
                     </div>
                 </BrowserRouter>

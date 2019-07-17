@@ -11,6 +11,7 @@ import NotificationIcon from '@material-ui/icons/Notifications';
 
 import CustomButtom from '../util/CustomButton';
 import PostScream from '../components/PostScream';
+import Notifications from '../components/Notifications';
 
 class NavBar extends Component {
     render() {
@@ -27,9 +28,10 @@ class NavBar extends Component {
                                     <HomeIcon color="primary"></HomeIcon>
                                 </CustomButtom>
                             </Link>
-                            <CustomButtom tip="Notifications">
+                            {/* <CustomButtom tip="Notifications">
                                 <NotificationIcon color="primary"></NotificationIcon>
-                            </CustomButtom>
+                            </CustomButtom> */}
+                              <Notifications></Notifications>
                         </Fragment>
 
                     ) :

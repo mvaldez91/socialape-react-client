@@ -8,22 +8,18 @@ import PropTypes from 'prop-types';
 
 import CustomButton from '../util/CustomButton';
 //Icons
-
 import FavoriteIcon from '@material-ui/icons/Favorite';
-
 import { themeStyles } from '../themes';
-const styles = (theme) => ({
+const styles = {
     ...themeStyles
-});
+};
 
 class LikeButton extends Component {
 
     likedScream = () => {
-
-        if (this.props.user.likes &&
-            this.props.user.likes.find(
-                (like) => like.screamId === this.props.scream.screamId
-            )) {
+        
+        if (this.props.user.likes && 
+            this.props.user.likes.find((like) => like.screamId === this.props.scream.screamId)) {
             return true;
         }
         else {

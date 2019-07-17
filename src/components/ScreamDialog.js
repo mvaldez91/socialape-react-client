@@ -40,10 +40,7 @@ const styles = (theme) => ({
         left: '90%',
         top: '5%'
     },
-    invisibleSeparator: {
-        border: 'none',
-        margin: 4
-    },
+   
     profileImage: {
         maxWidth: 200,
         height: 200,
