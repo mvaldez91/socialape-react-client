@@ -1,0 +1,1 @@
+export const BASE_API_URL = 'https://us-central1-react-social-network-2e7aa.cloudfunctions.net/api'

@@ -1,10 +1,13 @@
-import { SET_USER, 
-         SET_AUTHENTICATED, 
-         SET_UNAUTHENTICATED, 
-         LOADING_USER, 
-         UNLIKE_SCREAM, 
-         LIKE_SCREAM,
-         SET_USER_DETAILS } from '../types';
+import {
+    SET_USER,
+    SET_AUTHENTICATED,
+    SET_UNAUTHENTICATED,
+    LOADING_USER,
+    UNLIKE_SCREAM,
+    LIKE_SCREAM,
+    SET_USER_DETAILS,
+    MARK_NOTIFICATION_AS_READ
+} from '../types';
 
 const initialState = {
     authenticated: false,
@@ -53,6 +56,12 @@ export default function (state = initialState, action) {
                 ...state
             }
         case SET_USER_DETAILS:
+            return {
+                ...state
+            }
+        case MARK_NOTIFICATION_AS_READ:
+            let notificationIdx = state.notifications.findIndex(notification => notification.notificationId === action.payload)
+            state.notifications[notificationIdx].read = true;
             return {
                 ...state
             }

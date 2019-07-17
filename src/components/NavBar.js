@@ -7,7 +7,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 
 import HomeIcon from '@material-ui/icons/Home';
-import NotificationIcon from '@material-ui/icons/Notifications';
 
 import CustomButtom from '../util/CustomButton';
 import PostScream from '../components/PostScream';

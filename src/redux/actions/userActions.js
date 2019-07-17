@@ -1,12 +1,15 @@
-import { SET_USER, 
-         SET_ERRORS, 
-         CLEAR_ERRORS, 
-         LOADING_UI, 
-         SET_UNAUTHENTICATED,
-         LOADING_USER,
-         SET_USER_DETAILS,
-         SET_SCREAMS } from '../types';
+import {
+    SET_USER,
+    SET_ERRORS,
+    CLEAR_ERRORS,
+    LOADING_UI,
+    SET_UNAUTHENTICATED,
+    LOADING_USER,
+    SET_USER_DETAILS,
+    SET_SCREAMS
+} from '../types';
 
+import { BASE_API_URL } from '../../util/config';
 const jsonHeaders = {
     "Accept": "application/json",
     "Content-Type": "application/json"
@@ -15,7 +18,7 @@ const jsonHeaders = {
 export const loginUser = (userData, history) => (dispatch) => {
     let resStatus = 0;
     dispatch({ type: LOADING_UI });
-    fetch('/login', {
+    fetch(`${BASE_API_URL}/login`, {
         method: 'POST',
         headers: jsonHeaders,
         body: JSON.stringify(userData)
@@ -32,7 +35,7 @@ export const loginUser = (userData, history) => (dispatch) => {
             dispatch(getUserData());
             dispatch({ type: CLEAR_ERRORS });
             history.push('/')
-           
+
         }).catch(err => {
             console.error(err)
             dispatch({
@@ -43,10 +46,10 @@ export const loginUser = (userData, history) => (dispatch) => {
 }
 
 
-export const signupUser = (userData,history) => (dispatch) => {
+export const signupUser = (userData, history) => (dispatch) => {
     let resStatus = 0;
     dispatch({ type: LOADING_UI });
-    fetch('/signup', {
+    fetch(`${BASE_API_URL}/signup`, {
         method: 'POST',
         headers: jsonHeaders,
         body: JSON.stringify(userData)
@@ -74,12 +77,12 @@ export const signupUser = (userData,history) => (dispatch) => {
 
 
 export const getUserData = () => (dispatch) => {
-    dispatch({type:LOADING_USER});
+    dispatch({ type: LOADING_USER });
     let resStatus = 0;
-    fetch('/user', {
+    fetch(`${BASE_API_URL}/user`, {
         method: 'GET',
         headers: {
-          ...jsonHeaders,
+            ...jsonHeaders,
             "Authorization": localStorage.FBIdToken
         }
     })
@@ -102,10 +105,10 @@ export const getUserData = () => (dispatch) => {
 };
 
 export const uploadImage = (formData) => (dispatch) => {
-    dispatch({type:LOADING_USER});
+    dispatch({ type: LOADING_USER });
     let resStatus = 0;
 
-    fetch('/user/image', {
+    fetch(`${BASE_API_URL}/user/image`, {
         method: 'POST',
         headers: {
             "Authorization": localStorage.FBIdToken
@@ -130,10 +133,10 @@ export const uploadImage = (formData) => (dispatch) => {
 export const editUserDetails = (userDetails) => (dispatch) => {
     let resStatus = 0;
     dispatch({ type: LOADING_USER });
-    fetch('/user', {
+    fetch(`${BASE_API_URL}/user`, {
         method: 'POST',
         headers: {
-            ...jsonHeaders, 
+            ...jsonHeaders,
             "Authorization": localStorage.FBIdToken
         },
         body: JSON.stringify(userDetails)
@@ -159,10 +162,10 @@ export const editUserDetails = (userDetails) => (dispatch) => {
 export const getUserDetails = (handle) => (dispatch) => {
     let resStatus = 0;
     dispatch({ type: LOADING_USER });
-    fetch(`/user/${handle}`, {
+    fetch(`${BASE_API_URL}/user/${handle}`, {
         method: 'GET',
         headers: {
-            ...jsonHeaders, 
+            ...jsonHeaders,
             "Authorization": localStorage.FBIdToken
         }
     })
@@ -174,9 +177,9 @@ export const getUserDetails = (handle) => (dispatch) => {
             if (resStatus >= 400) {
                 throw JSON.stringify(data);
             }
-            dispatch({type: SET_USER_DETAILS, payload: data});
-            dispatch({type: SET_SCREAMS, payload: data.screams });
-            
+            dispatch({ type: SET_USER_DETAILS, payload: data });
+            dispatch({ type: SET_SCREAMS, payload: data.screams });
+
         }).catch(err => {
             console.error(err)
             dispatch({
@@ -186,9 +189,9 @@ export const getUserDetails = (handle) => (dispatch) => {
         })
 }
 
-export const logoutUser = ()=> (dispatch)=>{
+export const logoutUser = () => (dispatch) => {
     localStorage.removeItem('FBIdToken');
-    dispatch({type: SET_UNAUTHENTICATED});
+    dispatch({ type: SET_UNAUTHENTICATED });
 };
 
 // const setAuthorizationHeader = (token)=>{

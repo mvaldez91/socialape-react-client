@@ -65,7 +65,8 @@ export default (state= initialState, action)=>{
                   ...state.scream.comments
                 ]
               }
-            }          
+            }
+        
         default:
           return {
             ...state

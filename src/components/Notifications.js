@@ -18,7 +18,7 @@ import CustomButton from '../util/CustomButton';
 import dayjs from 'dayjs';
 //Redux stuff
 import { connect } from 'react-redux';
-import { postScream } from '../redux/actions/dataActions';
+import { markNotificationAsRead } from '../redux/actions/dataActions';
 
 import { themeStyles } from '../themes';
 const styles = (theme) => ({
@@ -39,7 +39,6 @@ const styles = (theme) => ({
 class Notifications extends Component {
     state = {
         anchorEl: null,
-        body: '',
         errors: {}
     };
     handleOpen = (event) => {
@@ -48,15 +47,13 @@ class Notifications extends Component {
     handleClose = () => {
         this.setState({ anchorEl: null, errors: {} })
     }
-    handleClickItem = () => {
-
+    handleClickItem =(event, notification)=> {
+        this.setState({ anchorEl: null, errors: {} })
+        this.props.markNotificationAsRead(notification.notificationId);
+        //alert(notification.type);
     }
     handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value })
-    }
-    handleSubmit = (event) => {
-        event.preventDefault();
-        this.props.postScream({ body: this.state.body });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -66,7 +63,6 @@ class Notifications extends Component {
             });
         }
         if (!nextProps.UI.errors && !nextProps.UI.loading) {
-            this.setState({ body: '' })
             this.handleClose();
         }
     }
@@ -88,11 +84,9 @@ class Notifications extends Component {
 
         return (
             <Fragment>
-
                 <CustomButton tip="Notifications" onClick={this.handleOpen}>
                     <NotificationIcon color="primary"></NotificationIcon>
                 </CustomButton>
-
                 <Menu
                     id="simple-menu"
                     anchorEl={anchorEl}
@@ -101,7 +95,10 @@ class Notifications extends Component {
                     onClose={this.handleClose}>
                     {
                         notifications.map((notification, idx) => {
-                            let childrenData = <span></span>;
+                            let childrenData = null;
+                            if (notification.read){
+                                return childrenData;
+                            }
                             if (notification.type === 'like') {
                                 childrenData = likedNotification(notification);
                             }
@@ -109,10 +106,11 @@ class Notifications extends Component {
                                 childrenData = commentNotification(notification);
                             }
 
-                            return <MenuItem onClick={this.handleClickItem} key={`${notification.screamId}-not${idx}`}>
+                            return <MenuItem onClick={(event)=>{
+                                this.handleClickItem(event, notification);
+                            }} key={`${notification.screamId}-not${idx}`}>
                                             {childrenData}
-                                    </MenuItem>
-
+                                </MenuItem>
                         })
                     }
                 </Menu>
@@ -123,7 +121,8 @@ class Notifications extends Component {
 
 Notifications.propTypes = {
     UI: PropTypes.object.isRequired,
-    notifications: PropTypes.array.isRequired
+    notifications: PropTypes.array.isRequired,
+    markNotificationAsRead: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -132,7 +131,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-
+    markNotificationAsRead
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Notifications))

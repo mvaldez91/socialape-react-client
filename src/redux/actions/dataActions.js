@@ -8,8 +8,10 @@ import {SET_SCREAMS,
         LOADING_UI, 
         CLEAR_ERRORS, 
         STOP_LOADING_UI,
-        SET_COMMENT} from '../types';
+        SET_COMMENT,
+        MARK_NOTIFICATION_AS_READ} from '../types';
 
+import {BASE_API_URL} from '../../util/config';
 
 const jsonHeaders = {
     "Accept": "application/json",
@@ -18,7 +20,7 @@ const jsonHeaders = {
 
 export const getScreams = ()=> (dispatch)=>{
     let resStatus = 0
-    fetch('/scream',
+    fetch(`${BASE_API_URL}/scream`,
         {
             headers:{
                 ...jsonHeaders,
@@ -44,7 +46,7 @@ export const getScreams = ()=> (dispatch)=>{
 export const getScream = (screamId)=> (dispatch)=>{
     let resStatus = 0
     dispatch({type: LOADING_UI});
-    fetch(`/scream/${screamId}`,
+    fetch(`${BASE_API_URL}/scream/${screamId}`,
         {
             headers:{
                 ...jsonHeaders,
@@ -70,7 +72,7 @@ export const getScream = (screamId)=> (dispatch)=>{
 
 export const unlikeScream = (screamId)=>(dispatch)=>{
     let resStatus = 0
-    fetch(`/scream/${screamId}/unlike`,
+    fetch(`${BASE_API_URL}/scream/${screamId}/unlike`,
         {
             headers:{
                 ...jsonHeaders,
@@ -94,7 +96,7 @@ export const unlikeScream = (screamId)=>(dispatch)=>{
 
 export const likeScream = (screamId)=>(dispatch)=>{
     let resStatus = 0
-    fetch(`/scream/${screamId}/like`,
+    fetch(`${BASE_API_URL}/scream/${screamId}/like`,
         {
             headers:{
                 ...jsonHeaders,
@@ -118,7 +120,7 @@ export const likeScream = (screamId)=>(dispatch)=>{
 
 export const deleteScream = (screamId)=>(dispatch)=>{
     let resStatus = 0
-    fetch(`/scream/${screamId}`,
+    fetch(`${BASE_API_URL}/scream/${screamId}`,
         {
             headers:{
                 ...jsonHeaders,
@@ -144,7 +146,7 @@ export const deleteScream = (screamId)=>(dispatch)=>{
 export const postScream = (scream)=>(dispatch)=>{
     let resStatus = 0;
     dispatch({type: LOADING_UI});
-    fetch('/scream',
+    fetch(`${BASE_API_URL}/scream`,
         {
             headers:{
                 ...jsonHeaders,
@@ -172,7 +174,7 @@ export const postScream = (scream)=>(dispatch)=>{
 export const postComment = (screamId,comment)=> (dispatch)=>{
     let resStatus = 0;
     dispatch({type: LOADING_UI});
-    fetch(`/scream/${screamId}/comment`,
+    fetch(`${BASE_API_URL}/scream/${screamId}/comment`,
         {
             headers:{
                 ...jsonHeaders,
@@ -191,6 +193,33 @@ export const postComment = (screamId,comment)=> (dispatch)=>{
             
             dispatch({type: SET_COMMENT, payload: data});
             dispatch({type: STOP_LOADING_UI});
+        })
+        .catch(err=> {
+            dispatch({type: SET_ERRORS, payload: err})
+            console.error(err);
+        });
+}
+
+export const markNotificationAsRead = (notificationId)=>(dispatch)=>{
+    let resStatus = 0;
+    dispatch({type: LOADING_UI});
+    fetch(`${BASE_API_URL}/notifications`,
+        {
+            headers:{
+                ...jsonHeaders,
+                'Authorization': localStorage.getItem('FBIdToken')
+            },
+            method: 'POST',
+            body: JSON.stringify([notificationId]) 
+        })
+        .then(res=>{
+            resStatus = res.status;   
+            return res.json()})
+        .then(data=>{
+            if (resStatus >= 400){
+                throw JSON.stringify(data);
+            }
+            dispatch({type: MARK_NOTIFICATION_AS_READ, payload: notificationId});
         })
         .catch(err=> {
             dispatch({type: SET_ERRORS, payload: err})

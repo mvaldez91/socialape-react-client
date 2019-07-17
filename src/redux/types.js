@@ -19,6 +19,7 @@ export const LIKE_SCREAM = 'LIKE_SCREAM';
 export const UNLIKE_SCREAM = 'UNLIKE_SCREAM';
 export const DELETE_SCREAM = 'DELETE_SCREAM';
 export const POST_SCREAM = 'POST_SCREAM';
+export const MARK_NOTIFICATION_AS_READ = 'MARK_NOTIFICATION_AS_READ';
 
 //Coment reducer types
 export const SET_COMMENT = 'SET_COMMENT';
